@@ -1,4 +1,5 @@
-package no.arelodgaard.chip-8-interpreter;
+package no.arelodgaard.chip8interpreter;
+
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
