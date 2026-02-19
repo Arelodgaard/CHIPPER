@@ -2,13 +2,18 @@ package no.lodgaard.chipper;
 
 
 import javafx.application.Application;
-import javafx.stage.Stage;
+
 
 public class Main{
     static void main() {
 
+        Memory memory = new Memory();
+
+        System.out.println(Memory.indexRegister("1ff"));
 
         Application.launch(Display.class);
+
+
 
 
     }

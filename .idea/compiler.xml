@@ -7,8 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="CHIPPER" />
-        <module name="chip-8-interpreter" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="chip-8-interpreter" target="25" />
+    </bytecodeTargetLevel>
   </component>
 </project>
