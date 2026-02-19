@@ -1,19 +1,18 @@
 package no.lodgaard.chipper;
 
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class Main extends Application{
+public class Main{
     static void main() {
 
+
+        Application.launch(Display.class);
+
+
     }
 
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        stage.setTitle("Chipper");
-        stage.setWidth(900);
-        stage.setHeight(450);
-        stage.show();
-    }
+
 }
