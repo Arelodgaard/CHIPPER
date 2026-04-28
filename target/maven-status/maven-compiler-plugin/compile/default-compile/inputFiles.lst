@@ -1,2 +1,4 @@
-/home/arelod/Documents/Prog/CHIPPER/src/main/java/no/lodgaard/chipper/Main.java
-/home/arelod/Documents/Prog/CHIPPER/src/main/java/no/lodgaard/chipper/logic/Memory.java
+/Users/arelodgaard/IdeaProjects/chip-8-interpreter/src/main/java/no/lodgaard/chipper/Main.java
+/Users/arelodgaard/IdeaProjects/chip-8-interpreter/src/main/java/no/lodgaard/chipper/logic/CPU.java
+/Users/arelodgaard/IdeaProjects/chip-8-interpreter/src/main/java/no/lodgaard/chipper/logic/Memory.java
+/Users/arelodgaard/IdeaProjects/chip-8-interpreter/src/main/java/no/lodgaard/chipper/logic/RomLoader.java

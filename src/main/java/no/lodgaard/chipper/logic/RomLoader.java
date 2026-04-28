@@ -11,25 +11,31 @@ public class RomLoader {
         this.memory = memory;
     }
 
-    private void loadRom(String filePath) throws FileNotFoundException {
+    private void loadRom(String filePath) throws IOException {
 
-
+        FileInputStream inputStream = null;
 
 
         try {
-            FileInputStream inputStream = new FileInputStream(filePath);
+            inputStream = new FileInputStream(filePath);
 
             //This reads everything into memory starting
             //at address 0x00 which would be wrong
             //as the first 0x200 bytes are reserved for the
             //font.
-            inputStream.read(memory.getMemoryArray());
+
+
+            inputStream.read(memory.getMemoryArray(), 512, memory.getMemoryArray().length);
 
 
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
 
     }
