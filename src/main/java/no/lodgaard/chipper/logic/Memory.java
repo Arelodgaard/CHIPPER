@@ -59,10 +59,11 @@ public class Memory {
 
 
 	public byte[] getMemoryArray() {
-		return memoryArray;
+		return this.memoryArray;
 	}
 
-	public void setMemoryArray(byte[] memoryArray) {
+	public void writeMemory(byte[] memoryArray) {
+
 		this.memoryArray = memoryArray;
 	}
 }
