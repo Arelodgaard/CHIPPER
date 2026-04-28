@@ -1,10 +1,10 @@
-package no.lodgaard.chipper;
+package no.lodgaard.chipper.logic;
 
 
 //Chip-8 Memory has access to 4kb(4096) bytes
 public class Memory {
 
-	private static final String[] font = {
+	public static final String[] font = {
 			"0xF0", "0x90", "0x90", "0x90", "0xF0",
 			"0x20", "0x60", "0x20", "0x20", "0x70",
 			"0xF0", "0x10", "0xF0", "0x80", "0xF0",
@@ -27,6 +27,13 @@ public class Memory {
 
     private int programCounter;
 
+	public Memory() {
+
+	}
+
+	private void loadMemory() {
+
+	}
 
 	//Index Register supports 12-bits of addresses which conveniently
 	//Is 4096 addresses.
