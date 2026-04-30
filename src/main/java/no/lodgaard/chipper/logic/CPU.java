@@ -24,7 +24,7 @@ public class CPU {
         return fetchedByte;
     }
 
-    public void decode(byte[] instruction) {
+    public void decodeAndExecute(byte[] instruction) {
 
         String instructionToHex = HexFormat.of().formatHex(instruction);
 

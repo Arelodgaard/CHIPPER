@@ -1,6 +1,10 @@
 package no.lodgaard.chipper.logic;
 
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Stack;
+
 //Chip-8 Memory has access to 4kb(4096) bytes
 public class Memory {
 
@@ -11,13 +15,51 @@ public class Memory {
 
     private int programCounter;
 
+    private Deque<Byte> stack = new ArrayDeque<>();
+
 	public Memory() {
 
 	}
 
-	private void loadMemory() {
+    //Pop, removes the two bytes at the top of the stack and returns them
+    public byte[] popStack() {
 
-	}
+        //size is set such, because the stack pops out two bytes instructions
+        Byte[] byteWrapperBuffer = new Byte[1];
+
+        //Does it twice to get both bytes
+        byteWrapperBuffer[0] = stack.removeFirst();
+        byteWrapperBuffer[1] = stack.removeFirst();
+
+        byte[] finalInstruction = new byte[1];
+
+        //Converts it back to primitive datatype
+        for (int i = 0; i < byteWrapperBuffer.length; i++) {
+            finalInstruction[i] = byteWrapperBuffer[i].byteValue();
+        }
+
+        return finalInstruction;
+    }
+
+
+
+    public void pushStack(byte[] entry) {
+        Byte[] byteWrapperBuffer = new Byte[entry.length];
+
+        //Converts the primitive byte input to the class Byte for interactibility with the Stack
+        //However does it inverted, such as when popping the bytes out they get put together the correct way
+        for (int i = entry.length; i >= 0; i--) {
+            byteWrapperBuffer[i] = Byte.valueOf(entry[i]);
+        }
+
+        //Pushes the bytes into the stack
+        for (Byte b : byteWrapperBuffer) {
+            stack.push(b);
+        }
+
+
+    }
+
 
 	//Index Register supports 12-bits of addresses which conveniently
 	//Is 4096 addresses.
