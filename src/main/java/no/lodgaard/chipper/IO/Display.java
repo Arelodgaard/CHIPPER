@@ -2,12 +2,13 @@ package no.lodgaard.chipper.IO;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import no.lodgaard.chipper.DisplayLaunch;
 import no.lodgaard.chipper.Main;
 
 public class Display {
 
-    private final int pixelSizeWidth = Main.width / 64;
-    private final int pixelSizeHeight = Main.height / 32;
+    private final int pixelSizeWidth = DisplayLaunch.width / 64;
+    private final int pixelSizeHeight = DisplayLaunch.height / 32;
 
     private Canvas canvas;
     private GraphicsContext gc;
@@ -26,7 +27,15 @@ public class Display {
 
     }
 
+    //Simply clears screen with a big rectangle
+    public void clearScreen() {
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
     public void drawPixel(int posX, int posY) {
+
+
+
         gc.fillRect(posX, posY, pixelSizeWidth, pixelSizeHeight);
     }
 

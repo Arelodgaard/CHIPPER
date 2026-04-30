@@ -42,7 +42,7 @@ public class RomLoader {
 
     public void loadRom(String filePath) throws FileNotFoundException {
 
-        byte[] bufferArray = new byte[3584];
+        byte[] bufferArray = new byte[3583];
 
         //Load font into memory
         System.arraycopy(fontByte, 0, memory.getMemoryArray(), 0, 80);

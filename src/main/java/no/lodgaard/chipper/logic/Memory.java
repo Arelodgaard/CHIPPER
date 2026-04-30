@@ -11,7 +11,7 @@ public class Memory {
 
 
     //Using byte type might be smart we'll see.
-    private byte[] memoryArray = new byte[4096];
+    private byte[] memoryArray = new byte[4095];
 
     private int programCounter;
 
