@@ -9,6 +9,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import no.lodgaard.chipper.logic.CPU;
 import no.lodgaard.chipper.logic.Memory;
 import no.lodgaard.chipper.logic.RomLoader;
 
@@ -31,6 +32,7 @@ public class Main extends Application{
 
     private Memory memory;
     private RomLoader romLoader;
+    private CPU cpu;
 
     @Override
     public void start(Stage stage) throws FileNotFoundException {
@@ -49,6 +51,8 @@ public class Main extends Application{
         romLoader = new RomLoader(memory);
 
         romLoader.loadRom("src/main/resources/1-chip8-logo.ch8");
+
+        cpu = new CPU(memory);
 
         for (byte b : memory.getMemoryArray()) {
             System.out.println(Byte.toString(b));

@@ -46,8 +46,8 @@ public class Memory {
 		return this.memoryArray;
 	}
 
-	public void writeMemory(byte[] memoryArray) {
+	/*public void writeMemory(byte[] memoryArray) {
 
 		this.memoryArray = memoryArray;
-	}
+	}*/
 }

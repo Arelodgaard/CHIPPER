@@ -8,12 +8,17 @@ public class CPU {
         this.memory = memory;
     }
 
-   /* private byte fetch(int programCounter) {
-        byte fetchedByte = "B8";
+    //Fetches the two bytes necessary for an instruction and increments the PC +2
+   private byte[] fetchInstruction(int programCounter) {
 
+        byte[] fetchedByte = new byte[1];
 
+        fetchedByte[0] = memory.getMemoryArray()[programCounter];
+        fetchedByte[1] = memory.getMemoryArray()[programCounter + 1];
+
+        memory.setProgramCounter(programCounter + 2);
 
         return fetchedByte;
-    }*/
+    }
 
 }
