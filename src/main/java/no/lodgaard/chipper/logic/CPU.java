@@ -8,12 +8,12 @@ public class CPU {
         this.memory = memory;
     }
 
-    private byte fetch(int programCounter) {
-        byte fetchedByte;
+   /* private byte fetch(int programCounter) {
+        byte fetchedByte = "B8";
 
 
 
         return fetchedByte;
-    }
+    }*/
 
 }

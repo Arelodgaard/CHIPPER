@@ -10,6 +10,9 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import no.lodgaard.chipper.logic.Memory;
+import no.lodgaard.chipper.logic.RomLoader;
+
+import java.io.FileNotFoundException;
 
 
 public class Main extends Application{
@@ -26,8 +29,11 @@ public class Main extends Application{
     private PixelWriter pixelWriter;
     private GraphicsContext gc;
 
+    private Memory memory;
+    private RomLoader romLoader;
+
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws FileNotFoundException {
 
         canvas = new Canvas(width, height);
 
@@ -37,6 +43,23 @@ public class Main extends Application{
         stage.setTitle("CHIPPER v.0.0.1");
         stage.setScene(scene);
         stage.show();
+
+        memory = new Memory();
+
+        romLoader = new RomLoader(memory);
+
+        romLoader.loadRom("src/main/resources/1-chip8-logo.ch8");
+
+        for (byte b : memory.getMemoryArray()) {
+            System.out.println(Byte.toString(b));
+        }
+
+
+
+        System.out.println(memory.getMemoryArray().length);
+
+
+
     }
 
     static void main() {
