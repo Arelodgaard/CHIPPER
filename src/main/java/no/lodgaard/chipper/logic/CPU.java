@@ -1,5 +1,7 @@
 package no.lodgaard.chipper.logic;
 
+import no.lodgaard.chipper.IO.Display;
+
 import java.util.Arrays;
 import java.util.HexFormat;
 
@@ -7,8 +9,11 @@ public class CPU {
 
     private Memory memory;
 
-    public CPU(Memory memory) {
+    private Display display;
+
+    public CPU(Memory memory, Display display) {
         this.memory = memory;
+        this.display = display;
     }
 
     //Fetches the two bytes necessary for an instruction and increments the PC +2

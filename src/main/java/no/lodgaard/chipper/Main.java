@@ -21,12 +21,16 @@ public class Main{
 
     static void main(String[] args) throws FileNotFoundException {
 
+        display = new Display();
+        Application.launch(Display.class, args);
+
         //Initializing the different components(objects)
         memory = new Memory();
         romLoader = new RomLoader(memory);
         romLoader.loadRom("src/main/resources/1-chip8-logo.ch8");
-        cpu = new CPU(memory);
-        display = new Display(DisplayLaunch.width, DisplayLaunch.height);
+
+        cpu = new CPU(memory, display);
+
 
         //Test suite
         for (byte b : memory.getMemoryArray()) {
@@ -35,7 +39,7 @@ public class Main{
 
         //display.drawExample();
 
-        display.drawPixel(1, 10);
+        display.drawPixel(20, 40);
 
 
         System.out.println(memory.getMemoryArray().length);
@@ -43,7 +47,7 @@ public class Main{
 
 
 
-        Application.launch(DisplayLaunch.class, args);
+
 
 
 

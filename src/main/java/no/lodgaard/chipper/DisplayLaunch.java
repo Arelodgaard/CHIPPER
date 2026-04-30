@@ -18,13 +18,13 @@ public class DisplayLaunch extends Application {
     public static final int width = 1024;
     public static final int height = 512;
 
-
+    private Display display;
 
 
 
 
     @Override
-    public void start(Stage stage) throws FileNotFoundException {
+    public void start(Stage stage){
 
 
 

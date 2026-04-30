@@ -1,20 +1,32 @@
 package no.lodgaard.chipper.IO;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import no.lodgaard.chipper.DisplayLaunch;
 import no.lodgaard.chipper.Main;
 
-public class Display {
+public class Display extends Application {
 
-    private final int pixelSizeWidth = DisplayLaunch.width / 64;
-    private final int pixelSizeHeight = DisplayLaunch.height / 32;
+    public static final int width = 1024;
+    public static final int height = 512;
+
+    private final int pixelSizeWidth = width / 64;
+    private final int pixelSizeHeight = height / 32;
 
     private Canvas canvas;
     private GraphicsContext gc;
 
-    public Display(int width, int height) {
-        canvas = new Canvas(800,600);
+    private static Stage stage;
+
+
+
+
+    public Display() {
+        canvas = new Canvas(width,height);
         gc = canvas.getGraphicsContext2D();
     }
 
@@ -42,6 +54,18 @@ public class Display {
     public Canvas getCanvas() {
 
         return this.canvas;
+    }
+
+    @Override
+    public void start(Stage stage){
+
+        // Add canvas to the scene
+        StackPane root = new StackPane(getCanvas());
+        Scene scene = new Scene(root, width, height);
+        stage.setTitle("CHIPPER v.0.0.1");
+        stage.setScene(scene);
+        stage.show();
+
     }
 
 
