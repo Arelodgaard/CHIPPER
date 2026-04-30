@@ -1,3 +1,4 @@
 no/lodgaard/chipper/Main.class
 no/lodgaard/chipper/logic/CPU.class
 no/lodgaard/chipper/logic/RomLoader.class
+no/lodgaard/chipper/IO/Display.class
