@@ -18,7 +18,6 @@ public class Memory {
     private Deque<Byte> stack = new ArrayDeque<>();
 
 	public Memory() {
-
 	}
 
     //Pop, removes the two bytes at the top of the stack and returns them

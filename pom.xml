@@ -44,7 +44,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>no.lodgaard.chipper.Main</mainClass>
+                            <mainClass>no.lodgaard.chipper.DisplayLaunch</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -59,7 +59,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>no.lodgaard.chipper.Main</mainClass>
+                    <mainClass>no.lodgaard.chipper.DisplayLaunch</mainClass>
                 </configuration>
             </plugin>
         </plugins>

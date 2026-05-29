@@ -6,8 +6,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import no.lodgaard.chipper.DisplayLaunch;
-import no.lodgaard.chipper.Main;
 
 public class Display extends Application {
 
