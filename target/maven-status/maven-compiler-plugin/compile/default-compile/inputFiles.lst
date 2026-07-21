@@ -1,5 +1,5 @@
-/home/arelod/Documents/Prog/CHIPPER/src/main/java/no/lodgaard/chipper/DisplayLaunch.java
-/home/arelod/Documents/Prog/CHIPPER/src/main/java/no/lodgaard/chipper/IO/Display.java
+/home/arelod/Documents/Prog/CHIPPER/src/main/java/no/lodgaard/chipper/IO/Renderer.java
+/home/arelod/Documents/Prog/CHIPPER/src/main/java/no/lodgaard/chipper/Main.java
 /home/arelod/Documents/Prog/CHIPPER/src/main/java/no/lodgaard/chipper/logic/CPU.java
 /home/arelod/Documents/Prog/CHIPPER/src/main/java/no/lodgaard/chipper/logic/Memory.java
 /home/arelod/Documents/Prog/CHIPPER/src/main/java/no/lodgaard/chipper/logic/RomLoader.java

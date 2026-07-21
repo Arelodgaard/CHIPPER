@@ -1,6 +1,6 @@
 package no.lodgaard.chipper.logic;
 
-import no.lodgaard.chipper.IO.Display;
+import no.lodgaard.chipper.IO.Renderer;
 
 import java.util.Arrays;
 import java.util.HexFormat;
@@ -9,11 +9,11 @@ public class CPU {
 
     private Memory memory;
 
-    private Display display;
+    private Renderer renderer;
 
-    public CPU(Memory memory, Display display) {
+    public CPU(Memory memory, Renderer renderer) {
         this.memory = memory;
-        this.display = display;
+        this.renderer = renderer;
     }
 
     //Fetches the two bytes necessary for an instruction and increments the PC +2
@@ -33,35 +33,11 @@ public class CPU {
 
         String instructionToHex = HexFormat.of().formatHex(instruction);
 
-        char firstNibble = instructionToHex.charAt(0);
-        char secondNibble = instructionToHex.charAt(1);
-        char thirdNibble = instructionToHex.charAt(2);
-        char fourthNibble = instructionToHex.charAt(3);
 
 
-        switch (firstNibble) {
-            case '0':
-                switch (secondNibble) {
-                    case '0':
-                        switch (thirdNibble) {
-                            case 'E':
-                                switch (fourthNibble) {
-                                    case '0':
-                                        // Clear Screen
-                                        break;
-                                }
-                                break;
-                        }
-                        break;
-                }
-                break;
-            case '1':
-                break;
-            case '6':
-                break;
-            case 'a':
-                break;
-            case 'D':
+
+        switch (instructionToHex) {
+            case("00E0"):
                 break;
             default:
                 throw new RuntimeException("No such instruction as:" + Arrays.toString(instruction));

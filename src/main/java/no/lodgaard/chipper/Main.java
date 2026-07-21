@@ -3,12 +3,14 @@ package no.lodgaard.chipper;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import no.lodgaard.chipper.IO.Display;
+import no.lodgaard.chipper.IO.Renderer;
 import no.lodgaard.chipper.logic.CPU;
 import no.lodgaard.chipper.logic.Memory;
 import no.lodgaard.chipper.logic.RomLoader;
@@ -17,7 +19,7 @@ import java.io.FileNotFoundException;
 
 
 
-public class DisplayLaunch extends Application {
+public class Main extends Application {
 
     private static Stage stage;
 
@@ -29,7 +31,7 @@ public class DisplayLaunch extends Application {
     private static Memory memory;
     private static RomLoader romLoader;
     private static CPU cpu;
-    private static Display display;
+    private static Renderer renderer;
 
     public static void main(String[] args) {
         launch(args);
@@ -40,38 +42,34 @@ public class DisplayLaunch extends Application {
     @Override
     public void start(Stage stage) throws FileNotFoundException {
 
+        Canvas canvas = new Canvas(width, height);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
 
+        Renderer renderer = new Renderer(gc, width, height);
+        //renderer.draw();
+
+        Pane root = new Pane(canvas);
+        stage.setScene(new Scene(root));
+        stage.show();
 
         memory = new Memory();
-        display = new Display();
+
 
         romLoader = new RomLoader(memory);
         romLoader.loadRom("src/main/resources/1-chip8-logo.ch8");
 
-        cpu = new CPU(memory, display);
-
-
-        Rectangle rectangle = new Rectangle();
-        rectangle.setX(200);
-        rectangle.setY(200);
-        rectangle.setWidth(300);
-        rectangle.setHeight(400);
-        rectangle.setStroke(Color.TRANSPARENT);
-        rectangle.setFill(Color.valueOf("#00ffff"));
-
-        // Add canvas to the scene
-        Group root = new Group();
-        root.getChildren().add(rectangle);
+        cpu = new CPU(memory, renderer);
 
 
 
-        Scene scene = new Scene(root, width, height);
-        stage.setTitle("CHIPPER v.0.0.1");
-        stage.setScene(scene);
-        stage.show();
 
 
-        display.drawPixel(20, 40);
+
+
+
+
+        renderer.clearScreen();
+        renderer.drawPixel(20, 30);
 
 
 
@@ -84,7 +82,7 @@ public class DisplayLaunch extends Application {
 
         System.out.println(memory.getMemoryArray().length);
 
-        display.drawExample();
+        //Main.renderer.drawExample();
 
 
     }
