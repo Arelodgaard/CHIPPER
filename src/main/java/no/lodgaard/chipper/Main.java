@@ -55,10 +55,12 @@ public class Main extends Application {
         memory = new Memory();
 
 
+
         romLoader = new RomLoader(memory);
         romLoader.loadRom("src/main/resources/1-chip8-logo.ch8");
 
         cpu = new CPU(memory, renderer);
+        cpu.setProgramCounter(511);
 
 
 
@@ -69,17 +71,15 @@ public class Main extends Application {
 
 
 
+        renderer.clearScreen();
+        boolean running = true;
+        while (running) {
 
-        renderer.drawScreen(renderer.getPixelGrid());
+            byte[] instruction = cpu.fetchInstruction();
 
-        renderer.flipPixel(0, 0);
-        renderer.flipPixel(63, 0);
-        renderer.flipPixel(63, 31);
-        renderer.flipPixel(0, 31);
+            cpu.decodeAndExecute(instruction);
 
-        System.out.print(renderer);
-
-        renderer.drawScreen(renderer.getPixelGrid());
+        }
 
 
 

@@ -79,7 +79,7 @@ public class Renderer{
 
         setPixelGrid(bufferGrid);
 
-
+        drawScreen(getPixelGrid());
     }
 
     private void updatePixelGrid(int[][] grid) {
@@ -107,7 +107,7 @@ public class Renderer{
 
     }
 
-    public void drawScreen(int[][] grid) {
+    private void drawScreen(int[][] grid) {
 
         //To either draw or clear pixel at the iterated position.
         for (int i = 0; i < grid.length; i++) {

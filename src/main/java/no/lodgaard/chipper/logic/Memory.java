@@ -13,7 +13,7 @@ public class Memory {
     //Using byte type might be smart we'll see.
     private byte[] memoryArray = new byte[4095];
 
-    private int programCounter;
+
 
     private Deque<Byte> stack = new ArrayDeque<>();
 
@@ -24,17 +24,17 @@ public class Memory {
     public byte[] popStack() {
 
         //size is set such, because the stack pops out two bytes instructions
-        Byte[] byteWrapperBuffer = new Byte[1];
+        Byte[] byteWrapperBuffer = new Byte[2];
 
         //Does it twice to get both bytes
         byteWrapperBuffer[0] = stack.removeFirst();
         byteWrapperBuffer[1] = stack.removeFirst();
 
-        byte[] finalInstruction = new byte[1];
+        byte[] finalInstruction = new byte[2];
 
         //Converts it back to primitive datatype
         for (int i = 0; i < byteWrapperBuffer.length; i++) {
-            finalInstruction[i] = byteWrapperBuffer[i].byteValue();
+            finalInstruction[i] = byteWrapperBuffer[i];
         }
 
         return finalInstruction;
@@ -71,16 +71,7 @@ public class Memory {
 
 
 
-    public int getProgramCounter() {
-        return programCounter;
-    }
 
-    public void setProgramCounter(int pc) {
-
-
-
-		this.programCounter = pc;
-    }
 
 
 	public byte[] getMemoryArray() {
