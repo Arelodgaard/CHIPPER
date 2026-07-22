@@ -59,7 +59,7 @@ public class Main extends Application {
 
 
         romLoader = new RomLoader(memory);
-        romLoader.loadRom("src/main/resources/1-chip8-logo.ch8");
+        romLoader.loadRom("src/main/resources/2-ibm-logo.ch8");
 
         cpu = new CPU(memory, renderer);
         cpu.setProgramCounter(510);

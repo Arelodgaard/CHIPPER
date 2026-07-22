@@ -127,7 +127,7 @@ public class CPU {
                 System.out.println("intN: " + intN);
 
                 int posX = variableRegisters[intX] % 64;
-                int posY = variableRegisters[intY] % 32;
+                int posY = variableRegisters[intY] % 64;
                 System.out.println("posX: " + variableRegisters[intX] + " posY: " + variableRegisters[intY]);
                 //Sets VF to 0;
                 variableRegisters[15] = 0;
@@ -139,8 +139,9 @@ public class CPU {
 
                     byte spriteData = memory.getMemoryArray()[intN + indexRegister ];
                     System.out.println("Spritedata: " + Integer.toBinaryString(spriteData));
-                    for (int j = 0; j < 8; j++) {
-                        int bit = (spriteData >> (7 - j)) & 1;
+                    for (int j = 7; j >= 0; j--) {
+                        int bit = (spriteData >> j) & 1;
+                        System.out.println("Bit[" + j + "] = " + bit);
                         switch (bit) {
                             case(0):
                                 break;
