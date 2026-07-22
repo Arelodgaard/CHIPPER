@@ -111,7 +111,7 @@ public class CPU {
                 variableRegisters[15] = 0;
 
                 for (int i = 0; i < intN; i++) {
-
+                    System.out.println("posX: " + posX + " posY: " + posY);
                     //look at how the indexregister is fetched
                     byte spriteData = memory.getMemoryArray()[indexRegister[0] + indexRegister[1] + 511 + intN];
 
@@ -131,13 +131,13 @@ public class CPU {
                             default:
                                 break;
                         }
-                        if (posY >= 64) break;
+                        if (posX >= 63) break;
                         posX++;
                     }
 
                     posY++;
 
-                    if (posY >= 32) break;
+                    if (posY >= 31) break;
                 }
 
                 renderer.drawScreen(renderer.getPixelGrid());
