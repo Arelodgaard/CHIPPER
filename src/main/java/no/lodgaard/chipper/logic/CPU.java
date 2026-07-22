@@ -38,7 +38,7 @@ public class CPU {
 
         switch (instructionToHex) {
             case("00E0"):
-                break;
+                renderer.clearScreen();
             default:
                 throw new RuntimeException("No such instruction as:" + Arrays.toString(instruction));
 

@@ -69,7 +69,10 @@ public class Main extends Application {
 
 
         renderer.clearScreen();
-        renderer.drawPixel(20, 30);
+        renderer.drawPixel(0, 0);
+        renderer.drawPixel(0, 31);
+        renderer.drawPixel(63, 0);
+        renderer.drawPixel(63, 31);
 
 
 
