@@ -104,6 +104,8 @@ public class Renderer{
                 break;
         }
 
+        drawScreen(getPixelGrid());
+
 
     }
 

@@ -1,6 +1,7 @@
 package no.lodgaard.chipper;
 
 import javafx.application.Application;
+import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -46,7 +47,7 @@ public class Main extends Application {
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        Renderer renderer = new Renderer(gc, width, height);
+        renderer = new Renderer(gc, width, height);
         //renderer.draw();
 
         Pane root = new Pane(canvas);
@@ -75,18 +76,16 @@ public class Main extends Application {
 
 
         renderer.clearScreen();
-        boolean running = true;
-        while (running) {
+        renderer.drawScreen(renderer.getPixelGrid());
 
-            for (int i = 0; i < 10000; i++) {
-                byte[] instruction = cpu.fetchInstruction();
-
+        AnimationTimer emulatorLoop = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                int instruction = cpu.fetchInstruction();
                 cpu.decodeAndExecute(instruction);
             }
-
-            running = false;
-
-        }
+        };
+        emulatorLoop.start();
 
 
 
@@ -99,7 +98,7 @@ public class Main extends Application {
 
 
 
-        System.out.println(memory.getMemoryArray().length);
+
 
         //Main.renderer.drawExample();
 
