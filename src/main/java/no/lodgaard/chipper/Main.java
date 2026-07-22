@@ -67,7 +67,7 @@ public class Main extends Application {
 
 
 
-        for (int i = 0; i < memory.getMemoryArray().length; i++) {
+        for (int i = 0; i < 800; i++) {
             System.out.println("Address: " + i + " Hex: " + HexFormat.of().toHexDigits(memory.getMemoryArray()[i]));
         }
 

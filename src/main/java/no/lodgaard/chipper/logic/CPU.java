@@ -145,23 +145,25 @@ public class CPU {
                             case(0):
                                 break;
                             case(1):
-                                if (renderer.getPixelGrid()[posX][posY] == 0) {
+                                if (renderer.getPixelGridValue(posX, posY) == 0) {
                                     renderer.flipPixel(posX, posY);
-                                } else if (renderer.getPixelGrid()[posX][posY] == 1) {
+                                    System.out.println("Flipped x: " + posX + " y: " + posY);
+                                } else if (renderer.getPixelGridValue(posX, posY) == 1) {
                                     renderer.flipPixel(posX, posY);
+                                    System.out.println("Flipped x: " + posX + " y: " + posY);
                                     variableRegisters[15] = 1;
                                 }
                                 break;
                             default:
                                 break;
                         }
-                        if (posX >= 63) break;
+                        if (posX >= 64) break;
                         posX++;
                     }
 
                     posY++;
 
-                    if (posY >= 31) break;
+                    if (posY >= 32) break;
                 }
 
 

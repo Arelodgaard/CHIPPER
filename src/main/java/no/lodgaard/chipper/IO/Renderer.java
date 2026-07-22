@@ -91,7 +91,7 @@ public class Renderer{
 
     public void flipPixel(int posX, int posY) {
 
-        int pixelBit = getPixelGrid()[posX][posY];
+        int pixelBit = getPixelGridValue(posX, posY);
 
         switch (pixelBit) {
             case 0:
@@ -114,9 +114,9 @@ public class Renderer{
         //To either draw or clear pixel at the iterated position.
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == 1) {
+                if (getPixelGridValue(i,j) == 1) {
                     drawPixel(i, j);
-                } else if (grid[i][j] == 0) {
+                } else if (getPixelGridValue(i,j) == 0) {
                     clearPixel(i, j);
                 }
             }
@@ -143,17 +143,36 @@ public class Renderer{
         return pixelGrid;
     }
 
+    public int getPixelGridValue(int posX, int posY) {
+
+        if (posX > 64) posX -= 64;
+        if (posY > 32) posX -= 32;
+
+        return getPixelGrid()[posX][posY];
+
+    }
+
+    public void setPixelGridBit(int posX, int posY, int value) {
+
+        if (posX > 64) posX -= 64;
+        if (posY > 32) posX -= 32;
+
+        getPixelGrid()[posX][posY] = value;
+    }
+
     public void setPixelGrid(int[][] pixelGrid) {
         this.pixelGrid = pixelGrid;
     }
 
-    private void setPixelGridBit(int x, int y, int bit) {
+    /*private void setPixelGridBit(int x, int y, int bit) {
         int[][] bufferGrid = getPixelGrid();
 
         bufferGrid[x][y] = bit;
 
         setPixelGrid(bufferGrid);
-    }
+    }*/
+
+
 
     @Override
     public String toString() {
