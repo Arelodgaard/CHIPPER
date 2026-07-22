@@ -47,27 +47,27 @@ public class CPU {
         //X
         char charX = instructionToHex.charAt(1);
         byte[] byteX = HexFormat.of().parseHex(String.valueOf('0' + charX));
-        int intX = (int) byteX[0];
+        int intX = byteX[0];
 
         //Y
         char charY = instructionToHex.charAt(2);
         byte[] byteY = HexFormat.of().parseHex(String.valueOf('0' + charY));
-        int intY = (int) byteY[0];
+        int intY = byteY[0];
 
         //N: FourthNibble
         char charN = instructionToHex.charAt(3);
         byte[] byteN = HexFormat.of().parseHex(String.valueOf('0' + charN));
-        int intN = (int) byteN[0];
+        int intN = byteN[0];
 
         //NN: The Second Byte (Third and Fourth Nibbles)
         String stringNN = String.valueOf(charY + charN);
         byte[] byteNN = HexFormat.of().parseHex(stringNN);
-        int intNN = (int) byteNN[0];
+        int intNN = byteNN[0];
 
         //NNN: The second, third and fourth nibbles
         String stringNNN = String.valueOf(charX + charY + charN);
         byte[] byteNNN = HexFormat.of().parseHex(String.valueOf(charX + charY + '0' + charN));
-        int intNNN = (int) byteNNN[0] + (int) byteNNN[1];
+        int intNNN = ((byteNNN[0] & 0xFF) << 4) | (byteNNN[1] & 0x0F);
 
         switch (firstNibbleChar) {
             //(00E0) Clear Screen
@@ -94,6 +94,42 @@ public class CPU {
                 break;
             //(DXYN) Display: Despair awaits
             case('D'):
+                int posX = variableRegisters[intX];
+                int posY = variableRegisters[intY];
+
+                //Sets VF to 0;
+                variableRegisters[15] = 0;
+
+                for (int i = 0; i < intN; i++) {
+
+                    byte spriteData = memory.getMemoryArray()[intNNN + intN];
+
+                    for (int j = 7; j >= 0; j--) {
+                        int bit = (spriteData >> j) & 1;
+                        switch (bit) {
+                            case(0):
+                                break;
+                            case(1):
+                                if (renderer.getPixelGrid()[posX][posY] == 0) {
+                                    renderer.flipPixel(posX, posY);
+                                } else if (renderer.getPixelGrid()[posX][posY] == 1) {
+                                    renderer.flipPixel(posX, posY);
+                                    variableRegisters[15] = 1;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        if (posY >= 64) break;
+                        posX++;
+                    }
+
+                    posY++;
+
+                    if (posY >= 32) break;
+                }
+
+
                 break;
             default:
                 throw new RuntimeException("No such instruction as:" + Arrays.toString(instruction));
