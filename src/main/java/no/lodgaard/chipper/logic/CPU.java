@@ -43,15 +43,15 @@ public class CPU {
 
     public void decodeAndExecute(int instruction) {
 
-        System.out.println("Int instruction:" + Integer.toBinaryString(instruction));
+        System.out.println("Int instruction: " + Integer.toBinaryString(instruction));
 
         String instructionHexBuffer = HexFormat.of().toHexDigits(instruction);
         String instructionHex = instructionHexBuffer.substring(4);
-        System.out.println(instructionHex);
+        System.out.println("Hex instruction: " + instructionHex);
 
         //FirstNibble
         char firstNibble = instructionHex.charAt(0);
-        System.out.println("Firstnibble: " + firstNibble);
+
         //X
         char charX = instructionHex.charAt(1);
         byte[] byteX = HexFormat.of().parseHex("" + '0' + charX);
@@ -75,15 +75,12 @@ public class CPU {
         //NNN: The second, third and fourth nibbles
         String stringNNN = String.valueOf(charX + charY + charN);
         byte[] byteNNN = HexFormat.of().parseHex("" + charX + charY + '0' + charN);
-        System.out.println("StringNNN: " + Arrays.toString(byteNNN));
         int intNNN = HexFormat.of().fromHexDigits("" + charX + charY + charN);
-        System.out.println("intNNN: " + intNNN);
 
         switch (firstNibble) {
             //(00E0) Clear Screen
             case('0'):
                 if (charX == '0' & charY == 'e' & charN == '0') {
-                    System.out.println("Opcode 00E0: Called");
                     renderer.clearScreen();
                     break;
                 } else {
@@ -94,65 +91,72 @@ public class CPU {
 
             //(1NNN)Jump: set the pc to nnn
             case('1'):
-                System.out.println("OpCode: 1NNN");
-                System.out.println("Supplied: " + instructionHex);
-                System.out.println("intNNN: " + intNNN);
-                setProgramCounter(intNNN - 80);
-
-                System.out.println("PC:" + getProgramCounter());
+                setProgramCounter(intNNN);
                 break;
+            //(2NNN)Call: call subroutine at NNN
+            case('2'):
+                memory.pushStack();
             //(6XNN)Set: Simply set the register vx to the value nn.
             case('6'):
-                System.out.println("OpCode: 6XNN");
-                System.out.println("Set v" + intX + " = " + byteNN[0]);
                 variableRegisters[intX] = byteNN[0];
 
                 break;
             //(7XNN)Add: Add the value nn to vx
             case('7'):
-                System.out.println("OpCode: 7XNN");
                 variableRegisters[intX] += byteNN[0];
-                System.out.println("Added " + byteNN[0] + " to v" + intX);
                 break;
             //(ANNN) Set Index: This sets the index register I to the value of NNN
             case('a'):
-                System.out.println("OpCode: ANNN");
                 indexRegister = intNNN;
-                System.out.println(indexRegister);
-                System.out.println("Set I = " + indexRegister);
+                break;
+            //(3XNN) Skip instruction if vX == NN
+            case('3'):
+                if (variableRegisters[intX] == byteNN[0]) {
+                    programCounter += 2;
+                }
+                break;
+            //(4XNN) Skip instruction if vX != NN
+            case('4'):
+                if (variableRegisters[intX] != byteNN[0]) {
+                    programCounter += 2;
+                }
+                break;
+            //(5XY0) Skip instruction if vX == vY
+            case('5'):
+                if (variableRegisters[intX] == variableRegisters[intY]) {
+                    programCounter += 2;
+                }
+                break;
+            //(9XY0) Skip instruction if vX != vY
+            case('9'):
+                if (variableRegisters[intX] != variableRegisters[intY]) {
+                    programCounter += 2;
+                }
                 break;
             //(DXYN) Display: Despair awaits
             case('d'):
-                System.out.println("OpCode: DXYN");
-                System.out.println("intN: " + intN);
 
                 int posX = variableRegisters[intX] % 64;
                 int posY = variableRegisters[intY] % 64;
-                System.out.println("posX: " + variableRegisters[intX] + " posY: " + variableRegisters[intY]);
+
                 //Sets VF to 0;
                 variableRegisters[15] = 0;
 
                 for (int i = 0; i < intN; i++) {
-                    System.out.println("posX: " + posX + " posY: " + posY);
                     posX = variableRegisters[intX] % 64;
-                    //look at how the indexregister is fetched
-                    System.out.println("Indexregister: " + indexRegister);
 
                     byte spriteData = memory.getMemoryArray()[indexRegister + i];
-                    System.out.println("Spritedata: " + Integer.toBinaryString(spriteData));
+
                     for (int j = 7; j >= 0; j--) {
                         int bit = (spriteData >> j) & 1;
-                        System.out.println("Bit[" + j + "] = " + bit);
                         switch (bit) {
                             case(0):
                                 break;
                             case(1):
                                 if (renderer.getPixelGridValue(posX, posY) == 0) {
                                     renderer.flipPixel(posX, posY);
-                                    System.out.println("Flipped x: " + posX + " y: " + posY);
                                 } else if (renderer.getPixelGridValue(posX, posY) == 1) {
                                     renderer.flipPixel(posX, posY);
-                                    System.out.println("Flipped x: " + posX + " y: " + posY);
                                     variableRegisters[15] = 1;
                                 }
                                 break;
@@ -167,7 +171,6 @@ public class CPU {
 
                     if (posY >= 32) break;
                 }
-
 
                 break;
             default:

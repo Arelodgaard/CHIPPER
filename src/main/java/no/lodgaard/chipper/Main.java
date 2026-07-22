@@ -59,7 +59,7 @@ public class Main extends Application {
 
 
         romLoader = new RomLoader(memory);
-        romLoader.loadRom("src/main/resources/2-ibm-logo.ch8");
+        romLoader.loadRom("src/main/resources/3-corax+.ch8");
 
         cpu = new CPU(memory, renderer);
         cpu.setProgramCounter(0x200);
@@ -74,6 +74,7 @@ public class Main extends Application {
 
 
 
+        final int CYCLES_PER_FRAME = 700 / 60;
 
         renderer.clearScreen();
         renderer.drawScreen(renderer.getPixelGrid());
@@ -81,8 +82,12 @@ public class Main extends Application {
         AnimationTimer emulatorLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                int instruction = cpu.fetchInstruction();
-                cpu.decodeAndExecute(instruction);
+                for (int i = 0; i < CYCLES_PER_FRAME; i++) {
+                    int instruction = cpu.fetchInstruction();
+                    cpu.decodeAndExecute(instruction);
+                }
+
+                renderer.drawScreen(renderer.getPixelGrid());
             }
         };
         emulatorLoop.start();
