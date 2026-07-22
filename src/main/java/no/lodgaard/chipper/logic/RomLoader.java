@@ -62,7 +62,7 @@ public class RomLoader {
 
             System.out.println(bufferArray.length);
 
-            System.arraycopy(bufferArray, 0, memory.getMemoryArray(), 512, bufferArray.length);
+            System.arraycopy(bufferArray, 0, memory.getMemoryArray(), 510, bufferArray.length);
 
 
         } catch (FileNotFoundException e) {

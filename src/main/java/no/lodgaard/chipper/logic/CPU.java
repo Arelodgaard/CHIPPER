@@ -46,63 +46,74 @@ public class CPU {
 
         //X
         char charX = instructionToHex.charAt(1);
-        byte[] byteX = HexFormat.of().parseHex(String.valueOf('0' + charX));
+        byte[] byteX = HexFormat.of().parseHex("" + '0' + charX);
         int intX = byteX[0];
 
         //Y
         char charY = instructionToHex.charAt(2);
-        byte[] byteY = HexFormat.of().parseHex(String.valueOf('0' + charY));
+        byte[] byteY = HexFormat.of().parseHex("" + '0' + charY);
         int intY = byteY[0];
 
         //N: FourthNibble
         char charN = instructionToHex.charAt(3);
-        byte[] byteN = HexFormat.of().parseHex(String.valueOf('0' + charN));
+        byte[] byteN = HexFormat.of().parseHex("" + '0' + charN);
         int intN = byteN[0];
 
         //NN: The Second Byte (Third and Fourth Nibbles)
-        String stringNN = String.valueOf(charY + charN);
+        String stringNN = "" + charY + charN;
         byte[] byteNN = HexFormat.of().parseHex(stringNN);
         int intNN = byteNN[0];
 
         //NNN: The second, third and fourth nibbles
         String stringNNN = String.valueOf(charX + charY + charN);
-        byte[] byteNNN = HexFormat.of().parseHex(String.valueOf(charX + charY + '0' + charN));
+        byte[] byteNNN = HexFormat.of().parseHex("" + charX + charY + '0' + charN);
         int intNNN = ((byteNNN[0] & 0xFF) << 4) | (byteNNN[1] & 0x0F);
 
         switch (firstNibbleChar) {
             //(00E0) Clear Screen
             case('0'):
+                System.out.println("OpCode: 00E0");
                 renderer.clearScreen();
                 break;
 
             //(1NNN)Jump: set the pc to nnn
             case('1'):
+                System.out.println("OpCode: 1NNN");
                 setProgramCounter(intNNN);
+                System.out.println("PC:" + getProgramCounter());
                 break;
             //(6XNN)Set: Simply set the register vx to the value nn.
             case('6'):
+                System.out.println("OpCode: 6XNN");
                 variableRegisters[intX] = byteNN[0];
+                System.out.println("Set v" + intX + " = " + byteNN[0]);
                 break;
             //(7XNN)Add: Add the value nn to vx
             case('7'):
+                System.out.println("OpCode: 7XNN");
                 variableRegisters[intX] += byteNN[0];
+                System.out.println("Added " + byteNN[0] + " to v" + intX);
                 break;
             //(ANNN) Set Index: This sets the index register I to the value of NNN
-            case('A'):
+            case('a'):
+                System.out.println("OpCode: ANNN");
                 indexRegister[0] = byteNNN[0];
                 indexRegister[1] = byteNNN[1];
+                System.out.println("Set I = " + indexRegister[0] + indexRegister[1]);
                 break;
             //(DXYN) Display: Despair awaits
-            case('D'):
-                int posX = variableRegisters[intX];
-                int posY = variableRegisters[intY];
+            case('d'):
+                System.out.println("OpCode: DXYN");
+                int posX = variableRegisters[intX] - 1;
+                int posY = variableRegisters[intY] - 1;
 
                 //Sets VF to 0;
                 variableRegisters[15] = 0;
 
                 for (int i = 0; i < intN; i++) {
 
-                    byte spriteData = memory.getMemoryArray()[intNNN + intN];
+                    //look at how the indexregister is fetched
+                    byte spriteData = memory.getMemoryArray()[indexRegister[0] + indexRegister[1] + 511 + intN];
 
                     for (int j = 7; j >= 0; j--) {
                         int bit = (spriteData >> j) & 1;
@@ -129,10 +140,10 @@ public class CPU {
                     if (posY >= 32) break;
                 }
 
-
+                renderer.drawScreen(renderer.getPixelGrid());
                 break;
             default:
-                throw new RuntimeException("No such instruction as:" + Arrays.toString(instruction));
+                throw new RuntimeException("No such instruction as:" + instructionToHex);
 
         }
 

@@ -16,6 +16,7 @@ import no.lodgaard.chipper.logic.Memory;
 import no.lodgaard.chipper.logic.RomLoader;
 
 import java.io.FileNotFoundException;
+import java.util.HexFormat;
 import java.util.concurrent.TimeUnit;
 
 
@@ -60,12 +61,14 @@ public class Main extends Application {
         romLoader.loadRom("src/main/resources/1-chip8-logo.ch8");
 
         cpu = new CPU(memory, renderer);
-        cpu.setProgramCounter(511);
+        cpu.setProgramCounter(510);
 
 
 
 
-
+        for (int i = 0; i < memory.getMemoryArray().length; i++) {
+            System.out.println("Address: " + i + " Hex: " + HexFormat.of().toHexDigits(memory.getMemoryArray()[i]));
+        }
 
 
 
@@ -75,9 +78,13 @@ public class Main extends Application {
         boolean running = true;
         while (running) {
 
-            byte[] instruction = cpu.fetchInstruction();
+            for (int i = 0; i < 10000; i++) {
+                byte[] instruction = cpu.fetchInstruction();
 
-            cpu.decodeAndExecute(instruction);
+                cpu.decodeAndExecute(instruction);
+            }
+
+            running = false;
 
         }
 
@@ -89,13 +96,11 @@ public class Main extends Application {
 
 
         //Test suite
-        /*
-        for (byte b : memory.getMemoryArray()) {
-            System.out.println(Byte.toString(b));
-        }
+
+
 
         System.out.println(memory.getMemoryArray().length);
-        */
+
         //Main.renderer.drawExample();
 
 

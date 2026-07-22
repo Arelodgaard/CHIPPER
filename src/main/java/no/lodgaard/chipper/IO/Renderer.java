@@ -107,7 +107,7 @@ public class Renderer{
 
     }
 
-    private void drawScreen(int[][] grid) {
+    public void drawScreen(int[][] grid) {
 
         //To either draw or clear pixel at the iterated position.
         for (int i = 0; i < grid.length; i++) {
