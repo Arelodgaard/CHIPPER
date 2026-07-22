@@ -95,7 +95,7 @@ public class CPU {
                 break;
             //(2NNN)Call: call subroutine at NNN
             case('2'):
-                memory.pushStack();
+                break;
             //(6XNN)Set: Simply set the register vx to the value nn.
             case('6'):
                 variableRegisters[intX] = byteNN[0];
