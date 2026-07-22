@@ -62,7 +62,7 @@ public class Main extends Application {
         romLoader.loadRom("src/main/resources/2-ibm-logo.ch8");
 
         cpu = new CPU(memory, renderer);
-        cpu.setProgramCounter(510);
+        cpu.setProgramCounter(0x200);
 
 
 

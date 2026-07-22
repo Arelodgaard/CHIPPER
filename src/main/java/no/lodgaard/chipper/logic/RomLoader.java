@@ -47,7 +47,7 @@ public class RomLoader {
         byte[] bufferArray = new byte[3583];
 
         //Load font into memory
-        System.arraycopy(fontByte, 0, memory.getMemoryArray(), 0, 80);
+        System.arraycopy(fontByte, 0, memory.getMemoryArray(), 0, 0x50);
         System.out.println(fontByte.length);
 
         //Load Rom after Font load
@@ -62,7 +62,7 @@ public class RomLoader {
 
             System.out.println(bufferArray.length);
 
-            System.arraycopy(bufferArray, 0, memory.getMemoryArray(), 510, bufferArray.length);
+            System.arraycopy(bufferArray, 0, memory.getMemoryArray(), 0x200, bufferArray.length);
 
 
         } catch (FileNotFoundException e) {

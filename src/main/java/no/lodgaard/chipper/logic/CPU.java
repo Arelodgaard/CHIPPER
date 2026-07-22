@@ -134,10 +134,11 @@ public class CPU {
 
                 for (int i = 0; i < intN; i++) {
                     System.out.println("posX: " + posX + " posY: " + posY);
+                    posX = variableRegisters[intX] % 64;
                     //look at how the indexregister is fetched
                     System.out.println("Indexregister: " + indexRegister);
 
-                    byte spriteData = memory.getMemoryArray()[intN + indexRegister ];
+                    byte spriteData = memory.getMemoryArray()[indexRegister + i];
                     System.out.println("Spritedata: " + Integer.toBinaryString(spriteData));
                     for (int j = 7; j >= 0; j--) {
                         int bit = (spriteData >> j) & 1;
