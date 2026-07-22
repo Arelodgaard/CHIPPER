@@ -1,5 +1,5 @@
-no/lodgaard/chipper/logic/Memory.class
 no/lodgaard/chipper/Main.class
+no/lodgaard/chipper/logic/Memory.class
 no/lodgaard/chipper/logic/CPU.class
 no/lodgaard/chipper/IO/Renderer.class
 no/lodgaard/chipper/logic/RomLoader.class

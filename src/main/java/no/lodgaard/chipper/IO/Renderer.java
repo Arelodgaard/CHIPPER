@@ -7,6 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
 
 
 
@@ -25,9 +26,16 @@ public class Renderer{
     private double scale_x;
     private double scale_y;
 
+    //2D Array/Matrix that determines if pixel flipped
+    private int gridX = 64;
+    private int gridY = 32;
+    private int[][] pixelGrid = new int[gridX][gridY];
+
     private GraphicsContext _gc;
 
     private static Stage stage;
+
+
 
     public enum Pixel {
 
@@ -49,6 +57,11 @@ public class Renderer{
         scale_x = _width / gridWidth;
         scale_y = _height / gridHeight;
 
+        for (int i = 0; i < pixelGrid.length; i++) {
+            Arrays.fill(pixelGrid[i], 0);
+            System.out.println(Arrays.toString(pixelGrid[i]));
+        }
+
 
     }
 
@@ -57,18 +70,100 @@ public class Renderer{
     //Simply clears screen with a big rectangle
     public void clearScreen() {
 
-        _gc.clearRect(0, 0, _width, _height);
+        int[][] bufferGrid = new int[gridX][gridY];
+
+        //To flip all gridpixels to zero
+        for (int i = 0; i < bufferGrid.length; i++) {
+            Arrays.fill(bufferGrid[i], 0);
+        }
+
+        setPixelGrid(bufferGrid);
+
+
     }
 
+    private void updatePixelGrid(int[][] grid) {
+
+
+
+
+    }
+
+    public void flipPixel(int posX, int posY) {
+
+        int pixelBit = getPixelGrid()[posX][posY];
+
+        switch (pixelBit) {
+            case 0:
+                setPixelGridBit(posX, posY, 1);
+                break;
+            case 1:
+                setPixelGridBit(posX, posY, 0);
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
+    public void drawScreen(int[][] grid) {
+
+        //To either draw or clear pixel at the iterated position.
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == 1) {
+                    drawPixel(i, j);
+                } else if (grid[i][j] == 0) {
+                    clearPixel(i, j);
+                }
+            }
+        }
+
+
+    }
 
     //Remember as position starts at 0 not 1, max value is 63 x 31 not 64 x 32
-    public void drawPixel(int posX, int posY) {
+    private void drawPixel(int posX, int posY) {
 
 
 
         _gc.fillRect(posX * scale_x, posY * scale_y, pixelSizeWidth, pixelSizeHeight);
     }
 
+    private void clearPixel(int posX, int posY) {
+        _gc.clearRect(posX * scale_x, posY * scale_y, pixelSizeWidth, pixelSizeHeight);
+
+    }
+
+
+    public int[][] getPixelGrid() {
+        return pixelGrid;
+    }
+
+    public void setPixelGrid(int[][] pixelGrid) {
+        this.pixelGrid = pixelGrid;
+    }
+
+    private void setPixelGridBit(int x, int y, int bit) {
+        int[][] bufferGrid = getPixelGrid();
+
+        bufferGrid[x][y] = bit;
+
+        setPixelGrid(bufferGrid);
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < pixelGrid.length; i++) {
+            sb.append(Arrays.toString(pixelGrid[i]));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 
 
 }

@@ -16,7 +16,7 @@ import no.lodgaard.chipper.logic.Memory;
 import no.lodgaard.chipper.logic.RomLoader;
 
 import java.io.FileNotFoundException;
-
+import java.util.concurrent.TimeUnit;
 
 
 public class Main extends Application {
@@ -40,7 +40,7 @@ public class Main extends Application {
 
 
     @Override
-    public void start(Stage stage) throws FileNotFoundException {
+    public void start(Stage stage) throws FileNotFoundException, InterruptedException {
 
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -68,23 +68,34 @@ public class Main extends Application {
 
 
 
-        renderer.clearScreen();
-        renderer.drawPixel(0, 0);
-        renderer.drawPixel(0, 31);
-        renderer.drawPixel(63, 0);
-        renderer.drawPixel(63, 31);
+
+
+        renderer.drawScreen(renderer.getPixelGrid());
+
+        renderer.flipPixel(0, 0);
+        renderer.flipPixel(63, 0);
+        renderer.flipPixel(63, 31);
+        renderer.flipPixel(0, 31);
+
+        System.out.print(renderer);
+
+        renderer.drawScreen(renderer.getPixelGrid());
+
+
+
+
 
 
 
 
         //Test suite
-
+        /*
         for (byte b : memory.getMemoryArray()) {
             System.out.println(Byte.toString(b));
         }
 
         System.out.println(memory.getMemoryArray().length);
-
+        */
         //Main.renderer.drawExample();
 
 

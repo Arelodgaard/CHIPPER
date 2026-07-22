@@ -17,7 +17,7 @@ public class CPU {
     }
 
     //Fetches the two bytes necessary for an instruction and increments the PC +2
-   public byte[] fetchInstruction(int programCounter) {
+   public byte[] fetchNCombineInstruction(int programCounter) {
 
         byte[] fetchedByte = new byte[1];
 
@@ -29,15 +29,20 @@ public class CPU {
         return fetchedByte;
     }
 
+
+
     public void decodeAndExecute(byte[] instruction) {
 
         String instructionToHex = HexFormat.of().formatHex(instruction);
 
 
+        char firstNibble = instructionToHex.charAt(0);
+        char secondNibble = instructionToHex.charAt(1);
+        char thirdNibble = instructionToHex.charAt(2);
+        char fourthNibble = instructionToHex.charAt(3);
 
-
-        switch (instructionToHex) {
-            case("00E0"):
+        switch (firstNibble) {
+            case('0'):
                 renderer.clearScreen();
             default:
                 throw new RuntimeException("No such instruction as:" + Arrays.toString(instruction));
