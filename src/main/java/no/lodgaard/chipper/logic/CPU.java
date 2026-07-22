@@ -2,6 +2,7 @@ package no.lodgaard.chipper.logic;
 
 import no.lodgaard.chipper.IO.Renderer;
 
+import java.util.Arrays;
 import java.util.HexFormat;
 
 public class CPU {
@@ -12,7 +13,7 @@ public class CPU {
 
     private int programCounter;
 
-    private byte[] indexRegister = new byte[2];
+    private int indexRegister;
 
     private byte[] variableRegisters = new byte[16];
 
@@ -74,7 +75,9 @@ public class CPU {
         //NNN: The second, third and fourth nibbles
         String stringNNN = String.valueOf(charX + charY + charN);
         byte[] byteNNN = HexFormat.of().parseHex("" + charX + charY + '0' + charN);
-        int intNNN = ((byteNNN[0] & 0xFF) << 4) | (byteNNN[1] & 0x0F);
+        System.out.println("StringNNN: " + Arrays.toString(byteNNN));
+        int intNNN = HexFormat.of().fromHexDigits("" + charX + charY + charN);
+        System.out.println("intNNN: " + intNNN);
 
         switch (firstNibble) {
             //(00E0) Clear Screen
@@ -101,8 +104,9 @@ public class CPU {
             //(6XNN)Set: Simply set the register vx to the value nn.
             case('6'):
                 System.out.println("OpCode: 6XNN");
-                variableRegisters[intX] = byteNN[0];
                 System.out.println("Set v" + intX + " = " + byteNN[0]);
+                variableRegisters[intX] = byteNN[0];
+
                 break;
             //(7XNN)Add: Add the value nn to vx
             case('7'):
@@ -113,28 +117,30 @@ public class CPU {
             //(ANNN) Set Index: This sets the index register I to the value of NNN
             case('a'):
                 System.out.println("OpCode: ANNN");
-                indexRegister[0] = byteNNN[0];
-                indexRegister[1] = byteNNN[1];
-                System.out.println(indexRegister[0]);
-                System.out.println(indexRegister[1]);
-                System.out.println("Set I = " + indexRegister[0] + indexRegister[1]);
+                indexRegister = intNNN;
+                System.out.println(indexRegister);
+                System.out.println("Set I = " + indexRegister);
                 break;
             //(DXYN) Display: Despair awaits
             case('d'):
                 System.out.println("OpCode: DXYN");
-                int posX = variableRegisters[intX] - 1;
-                int posY = variableRegisters[intY] - 1;
+                System.out.println("intN: " + intN);
 
+                int posX = variableRegisters[intX] % 64;
+                int posY = variableRegisters[intY] % 32;
+                System.out.println("posX: " + variableRegisters[intX] + " posY: " + variableRegisters[intY]);
                 //Sets VF to 0;
                 variableRegisters[15] = 0;
 
                 for (int i = 0; i < intN; i++) {
                     System.out.println("posX: " + posX + " posY: " + posY);
                     //look at how the indexregister is fetched
-                    byte spriteData = memory.getMemoryArray()[(int) indexRegister[0] + (int) indexRegister[1] + 511 + intN];
+                    System.out.println("Indexregister: " + indexRegister);
 
-                    for (int j = 7; j >= 0; j--) {
-                        int bit = (spriteData >> j) & 1;
+                    byte spriteData = memory.getMemoryArray()[intN + indexRegister ];
+                    System.out.println("Spritedata: " + Integer.toBinaryString(spriteData));
+                    for (int j = 0; j < 8; j++) {
+                        int bit = (spriteData >> (7 - j)) & 1;
                         switch (bit) {
                             case(0):
                                 break;
@@ -158,7 +164,7 @@ public class CPU {
                     if (posY >= 31) break;
                 }
 
-                renderer.drawScreen(renderer.getPixelGrid());
+
                 break;
             default:
                 throw new RuntimeException("No such instruction as:" + instructionHex);
