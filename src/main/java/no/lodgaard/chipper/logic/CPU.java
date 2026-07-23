@@ -3,6 +3,7 @@ package no.lodgaard.chipper.logic;
 import no.lodgaard.chipper.IO.Renderer;
 
 import java.util.HexFormat;
+import java.util.Random;
 
 public class CPU {
 
@@ -116,6 +117,18 @@ public class CPU {
             //(ANNN) Set Index: This sets the index register I to the value of NNN
             case('a'):
                 indexRegister = intNNN;
+                break;
+            //(BNNN) Jump with offset: Sets PC to the address NNN plus v0
+            case('b'):
+                int BNNNv0 = variableRegisters[0] & 0xFF;
+                setProgramCounter(intNNN + BNNNv0);
+                break;
+            //(CXNN) Random: Generates random number, binary AND with value NN and puts result in vX
+            case('c'):
+                Random r = new Random();
+                int rand = r.nextInt(1000);
+                int binaryAND = rand & intNN;
+                variableRegisters[intX] = (byte) binaryAND;
                 break;
             //(3XNN) Skip instruction if vX == NN
             case('3'):
