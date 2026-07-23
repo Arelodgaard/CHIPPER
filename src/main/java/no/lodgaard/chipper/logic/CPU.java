@@ -112,8 +112,29 @@ public class CPU {
             case('7'):
                 variableRegisters[intX] += byteNN[0];
                 break;
-            //(8XY)
-
+            //(8XY) Logical and Arithmetic operations
+            case('8'):
+                //Checking fourthnibble
+                switch (charN) {
+                    //(8XY0) Set: vX is set to vY
+                    case('0'):
+                        variableRegisters[intX] = variableRegisters[intY];
+                        break;
+                    //(8XY1) Binary OR: vX = vX OR vY
+                    case('1'):
+                        variableRegisters[intX] = (byte) (variableRegisters[intX] | variableRegisters[intY]);
+                        break;
+                    //(8XY2) Binary AND: vX = vX AND vY
+                    case('2'):
+                        variableRegisters[intX] = (byte) (variableRegisters[intX] & variableRegisters[intY]);
+                        break;
+                    //(8XY3) Logical XOR: vX = vX XOR vY
+                    case('3'):
+                        variableRegisters[intX] = (byte) (variableRegisters[intX] ^ variableRegisters[intY]);
+                        break;
+                    default:
+                        break;
+                }
 
             //(ANNN) Set Index: This sets the index register I to the value of NNN
             case('a'):
