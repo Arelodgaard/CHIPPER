@@ -15,6 +15,7 @@ import no.lodgaard.chipper.logic.RomLoader;
 
 import java.io.FileNotFoundException;
 import java.util.HexFormat;
+import java.util.Scanner;
 
 
 public class Main extends Application {
@@ -34,6 +35,48 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws FileNotFoundException {
+
+
+        Scanner sc = new Scanner(System.in);
+        String romChoice = "";
+        boolean correct = false;
+
+        System.out.println("Select Rom:\n1) Chip-8-Logo\n2) IBM-Logo\n3) Corax+\n4) Flags");
+
+        while (!correct) {
+            if (!sc.hasNextInt()) {
+                System.out.println("Please enter a number.");
+                sc.next();
+                continue;
+            }
+            int choice = sc.nextInt();
+            switch (choice) {
+                case 1:
+                    romChoice = "1-chip8-logo.ch8";
+                    correct = true;
+                    break;
+                case 2:
+                    romChoice = "2-ibm-logo.ch8";
+                    correct = true;
+                    break;
+                case 3:
+                    romChoice = "3-corax+.ch8";
+                    correct = true;
+                    break;
+                case 4:
+                    romChoice = "4-flags.ch8";
+                    correct = true;
+                    break;
+                default:
+                    System.out.println("Not a valid choice, be serious m8!");
+                    break;
+            }
+        }
+
+        System.out.println("You've chosen " + romChoice);
+
+
+
 
         Canvas canvas = new Canvas(width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -55,7 +98,12 @@ public class Main extends Application {
 
 
         romLoader = new RomLoader(memory);
-        romLoader.loadRom("src/main/resources/1-chip8-logo.ch8");
+
+
+
+
+
+        romLoader.loadRom("src/main/resources/" + romChoice);
 
         cpu = new CPU(memory, renderer);
         cpu.setProgramCounter(0x200);
