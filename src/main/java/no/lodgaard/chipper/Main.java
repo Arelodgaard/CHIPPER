@@ -2,14 +2,11 @@ package no.lodgaard.chipper;
 
 import javafx.application.Application;
 import javafx.animation.AnimationTimer;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import no.lodgaard.chipper.IO.Renderer;
 import no.lodgaard.chipper.logic.CPU;
@@ -18,7 +15,7 @@ import no.lodgaard.chipper.logic.RomLoader;
 
 import java.io.FileNotFoundException;
 import java.util.HexFormat;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class Main extends Application {
@@ -51,8 +48,12 @@ public class Main extends Application {
         //renderer.draw();
 
         Pane root = new Pane(canvas);
-        stage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
         stage.show();
+
+        canvas.setFocusTraversable(true);
+        canvas.requestFocus();
 
         memory = new Memory();
 
@@ -79,14 +80,36 @@ public class Main extends Application {
         renderer.clearScreen();
         renderer.drawScreen(renderer.getPixelGrid());
 
+        boolean[] interrupted = {true};
+        boolean[] iterate = {false};
+
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.P) interrupted[0] = !interrupted[0];
+            if (event.getCode() == KeyCode.I) iterate[0] = true;
+        });
+
+
+
+
         AnimationTimer emulatorLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                for (int i = 0; i < CYCLES_PER_FRAME; i++) {
-                    int instruction = cpu.fetchInstruction();
-                    cpu.decodeAndExecute(instruction);
-                }
 
+                if (interrupted[0] == false) {
+
+                    for (int i = 0; i < CYCLES_PER_FRAME; i++) {
+                        int instruction = cpu.fetchInstruction();
+                        cpu.decodeAndExecute(instruction);
+
+                    }
+                }   else if (interrupted[0] == true) {
+                    if (iterate[0] == true) {
+                        int instruction = cpu.fetchInstruction();
+                        cpu.decodeAndExecute(instruction);
+                        System.out.println("Iterated");
+                        iterate[0] = false;
+                    }
+                }
                 renderer.drawScreen(renderer.getPixelGrid());
             }
         };

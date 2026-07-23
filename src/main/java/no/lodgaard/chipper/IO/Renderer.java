@@ -143,8 +143,8 @@ public class Renderer{
 
     public int getPixelGridValue(int posX, int posY) {
 
-        if (posX >= 64) posX -= 64;
-        if (posY >= 32) posX -= 32;
+        if (posX > 64) posX -= 64;
+        if (posY > 32) posX -= 32;
 
         return getPixelGrid()[posX][posY];
 

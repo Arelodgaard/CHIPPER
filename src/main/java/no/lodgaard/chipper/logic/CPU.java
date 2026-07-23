@@ -286,7 +286,7 @@ public class CPU {
                             default:
                                 break;
                         }
-                        if (posX >= 64) break;
+                        if (posX > 63) break;
                         posX++;
                     }
 
