@@ -215,46 +215,8 @@ public class CPU {
                 break;
             //(FX)
             case('f'):
-                //Checks third and fourth nibble
-                switch (stringNN) {
-                    //(FX1E) Add to index: I += vX, if indexregister overflows over 12-bit it sets vF = 1
-                    case("1e"):
-                        if (indexRegister + variableRegisters[intX] > 0x1000) {
-                            indexRegister += variableRegisters[intX];
-                            variableRegisters[15] = 1;
-                            break;
-                        } else {
-                            indexRegister += variableRegisters[intX];
-                            break;
-                        }
-                    //(FX33) Binary-coded decimal conversion:
-                    case("33"):
-                        String conversionString = "" + variableRegisters[intX];
-
-                        for (int i = 0; i < conversionString.length(); i++) {
-                            int intBufferConversion = conversionString.charAt(i);
-                            memory.getMemoryArray()[indexRegister + i + 0x200] = (byte) intBufferConversion;
-                        }
-                        break;
-                    //(FX55) Store memory: from v0 -> vX into I -> I + X
-                    case("55"):
-                        for (int i = 0; i < intX; i++) {
-                            memory.getMemoryArray()[indexRegister + i] = variableRegisters[i];
-
-                        }
-                        break;
-                    //(FX65) Load memory: from I -> I + X into v0 -> vX
-                    case("65"):
-                        for (int i = 0; i < intX; i++) {
-                            variableRegisters[i] = memory.getMemoryArray()[indexRegister + i];
-
-                        }
-                        break;
-                    default:
-                        break;
-
-
-                }
+                fOpcodes(stringNN, intX);
+                break;
 
             //(DXYN) Display: Despair awaits
             case('d'):
@@ -307,6 +269,51 @@ public class CPU {
 
     }
 
+    private void fOpcodes(String stringNN, int intX) {
+        //Checks third and fourth nibble
+        switch (stringNN) {
+            //(FX1E) Add to index: I += vX, if indexregister overflows over 12-bit it sets vF = 1
+            case("1e"):
+                System.out.println("We got to FX1E");
+                if (indexRegister + variableRegisters[intX] > 0x1000) {
+                    indexRegister += variableRegisters[intX];
+                    variableRegisters[15] = 1;
+                    break;
+                } else {
+                    indexRegister += variableRegisters[intX];
+                    break;
+                }
+                //(FX33) Binary-coded decimal conversion:
+            case("33"):
+                System.out.println("We got to FX33");
+                String conversionString = "" + variableRegisters[intX];
+
+                for (int i = 0; i < conversionString.length(); i++) {
+                    int intBufferConversion = conversionString.charAt(i);
+                    memory.getMemoryArray()[indexRegister + i] = (byte) intBufferConversion;
+                }
+                break;
+            //(FX55) Store memory: from v0 -> vX into I -> I + X
+            case("55"):
+                System.out.println("We got to FX55");
+                for (int i = 0; i < intX; i++) {
+                    memory.getMemoryArray()[indexRegister + i] = variableRegisters[i];
+
+                }
+                break;
+            //(FX65) Load memory: from I -> I + X into v0 -> vX
+            case("65"):
+                for (int i = 0; i < intX; i++) {
+                    variableRegisters[i] = memory.getMemoryArray()[indexRegister + i];
+                }
+                break;
+            default:
+                break;
+
+
+        }
+    }
+
     public int getProgramCounter() {
         return programCounter;
     }
@@ -317,6 +324,7 @@ public class CPU {
 
         this.programCounter = location;
     }
+
 
 
 }
