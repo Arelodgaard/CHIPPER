@@ -44,10 +44,10 @@ public class RomLoader {
 
     public void loadRom(String filePath) throws FileNotFoundException {
 
-        byte[] bufferArray = new byte[3583];
+        byte[] bufferArray = new byte[3584];
 
         //Load font into memory
-        System.arraycopy(fontByte, 0, memory.getMemoryArray(), 0, 0x50);
+        System.arraycopy(fontByte, 0, memory.getMemoryArray(), 0, fontByte.length);
         System.out.println(fontByte.length);
 
         //Load Rom after Font load

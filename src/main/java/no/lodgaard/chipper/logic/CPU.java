@@ -47,6 +47,8 @@ public class CPU {
         String instructionHexBuffer = HexFormat.of().toHexDigits(instruction);
         String instructionHex = instructionHexBuffer.substring(4);
         System.out.println("Hex instruction: " + instructionHex);
+        System.out.println("IndexRegister: " + indexRegister);
+
 
         //FirstNibble
         char firstNibble = instructionHex.charAt(0);
@@ -90,9 +92,6 @@ public class CPU {
                 } else {
                     break;
                 }
-
-
-
             //(1NNN)Jump: set the pc to nnn
             case('1'):
                 setProgramCounter(intNNN);
@@ -105,7 +104,6 @@ public class CPU {
             //(6XNN)Set: Simply set the register vx to the value nn.
             case('6'):
                 variableRegisters[intX] = byteNN[0];
-
                 break;
             //(7XNN)Add: Add the value nn to vx
             case('7'):
@@ -113,78 +111,8 @@ public class CPU {
                 break;
             //(8XY) Logical and Arithmetic operations
             case('8'):
-                //Checking fourthnibble
-                switch (charN) {
-                    //(8XY0) Set: vX is set to vY
-                    case('0'):
-                        variableRegisters[intX] = variableRegisters[intY];
-                        break;
-                    //(8XY1) Binary OR: vX = vX OR vY
-                    case('1'):
-                        variableRegisters[intX] = (byte) (variableRegisters[intX] | variableRegisters[intY]);
-                        break;
-                    //(8XY2) Binary AND: vX = vX AND vY
-                    case('2'):
-                        variableRegisters[intX] = (byte) (variableRegisters[intX] & variableRegisters[intY]);
-                        break;
-                    //(8XY3) Logical XOR: vX = vX XOR vY
-                    case('3'):
-                        variableRegisters[intX] = (byte) (variableRegisters[intX] ^ variableRegisters[intY]);
-                        break;
-                    //(8XY4) Add: vX = vX + vY, if overflow set vF = 1 else vF = 0
-                    case('4'):
-                        if (variableRegisters[intX] + variableRegisters[intY] > 127) {
-                            variableRegisters[intX] = (byte) (variableRegisters[intX] + variableRegisters[intY]);
-                            variableRegisters[15] = 1;
-                            break;
-                        } else {
-                            variableRegisters[intX] = (byte) (variableRegisters[intX] + variableRegisters[intY]);
-                            variableRegisters[15] = 0;
-                            break;
-                        }
-                    //(8XY5) Subtract: vX = vX - vY, if minuend >= subtrahend -> vF = 1 else vF = 0
-                    case('5'):
-                        if (variableRegisters[intX] >= variableRegisters[intY]) {
-                            variableRegisters[intX] = (byte) (variableRegisters[intX] - variableRegisters[intY]);
-                            variableRegisters[15] = 1;
-                            break;
-                        } else {
-                            variableRegisters[intX] = (byte) (variableRegisters[intX] - variableRegisters[intY]);
-                            variableRegisters[15] = 0;
-                            break;
-                        }
-
-
-                    //(8XY7) Subtract: vX = vY - vX, if minuend >= subtrahend -> vF = 1 else vF = 0
-                    case('7'):
-                        if (variableRegisters[intY] >= variableRegisters[intX]) {
-                            variableRegisters[intX] = (byte) (variableRegisters[intY] - variableRegisters[intX]);
-                            variableRegisters[15] = 1;
-                            break;
-                        } else {
-                            variableRegisters[intX] = (byte) (variableRegisters[intY] - variableRegisters[intX]);
-                            variableRegisters[15] = 0;
-                            break;
-                        }
-                    //(8XY6) Shift: Set vX = vY, then shift vX right then set vF = shiftedBit
-                    case('6'):
-                        variableRegisters[intX] = variableRegisters[intY];
-                        int bitShiftRight = variableRegisters[intX] & 1;
-                        variableRegisters[15] = (byte) bitShiftRight;
-                        variableRegisters[intX] = (byte) ((variableRegisters[intX]& 0xFF) >> 1);
-
-                        break;
-                    //(8XYE) Shift: Set vX = vY, then shift vX left then set vF = shiftedBit
-                    case('e'):
-                        variableRegisters[intX] = variableRegisters[intY];
-                        int bitShiftLeft = variableRegisters[intX] & 8;
-                        variableRegisters[15] = (byte) bitShiftLeft;
-                        variableRegisters[intX] = (byte) ((variableRegisters[intX] & 0xFF ) << 1);
-                        break;
-                    default:
-                        break;
-                }
-
+                eightOpcodes(charN, intX, intY);
+                break;
             //(ANNN) Set Index: This sets the index register I to the value of NNN
             case('a'):
                 indexRegister = intNNN;
@@ -217,25 +145,17 @@ public class CPU {
             case('f'):
                 fOpcodes(stringNN, intX);
                 break;
-
             //(DXYN) Display: Despair awaits
             case('d'):
-
-                int posX = variableRegisters[intX] % 64;
                 int posY = variableRegisters[intY] % 64;
-
                 //Sets VF to 0;
                 variableRegisters[15] = 0;
-
                 for (int i = 0; i < intN; i++) {
-                    posX = variableRegisters[intX] % 64;
-
+                    int posX = variableRegisters[intX] % 64;
                     byte spriteData = memory.getMemoryArray()[indexRegister + i];
-
                     for (int j = 7; j >= 0; j--) {
                         int bit = (spriteData >> j) & 1;
                         switch (bit) {
-
                             case(0):
                                 break;
                             case(1):
@@ -254,19 +174,86 @@ public class CPU {
                         if (posX > 63) break;
                         posX++;
                     }
-
                     posY++;
-
                     if (posY >= 32) break;
                 }
-
                 break;
             default:
                 throw new RuntimeException("No such instruction as:" + instructionHex);
-
         }
+    }
+
+    private void eightOpcodes(char charN, int intX, int intY) {
+        //Checking fourthnibble
+        switch (charN) {
+            //(8XY0) Set: vX is set to vY
+            case('0'):
+                variableRegisters[intX] = variableRegisters[intY];
+                break;
+            //(8XY1) Binary OR: vX = vX OR vY
+            case('1'):
+                variableRegisters[intX] = (byte) (variableRegisters[intX] | variableRegisters[intY]);
+                break;
+            //(8XY2) Binary AND: vX = vX AND vY
+            case('2'):
+                variableRegisters[intX] = (byte) (variableRegisters[intX] & variableRegisters[intY]);
+                break;
+            //(8XY3) Logical XOR: vX = vX XOR vY
+            case('3'):
+                variableRegisters[intX] = (byte) (variableRegisters[intX] ^ variableRegisters[intY]);
+                break;
+            //(8XY4) Add: vX = vX + vY, if overflow set vF = 1 else vF = 0
+            case('4'):
+                if (variableRegisters[intX] + variableRegisters[intY] > 127) {
+                    variableRegisters[intX] = (byte) (variableRegisters[intX] + variableRegisters[intY]);
+                    variableRegisters[15] = 1;
+                    break;
+                } else {
+                    variableRegisters[intX] = (byte) (variableRegisters[intX] + variableRegisters[intY]);
+                    variableRegisters[15] = 0;
+                    break;
+                }
+                //(8XY5) Subtract: vX = vX - vY, if minuend >= subtrahend -> vF = 1 else vF = 0
+            case('5'):
+                if (variableRegisters[intX] >= variableRegisters[intY]) {
+                    variableRegisters[intX] = (byte) (variableRegisters[intX] - variableRegisters[intY]);
+                    variableRegisters[15] = 1;
+                    break;
+                } else {
+                    variableRegisters[intX] = (byte) (variableRegisters[intX] - variableRegisters[intY]);
+                    variableRegisters[15] = 0;
+                    break;
+                }
 
 
+                //(8XY7) Subtract: vX = vY - vX, if minuend >= subtrahend -> vF = 1 else vF = 0
+            case('7'):
+                if (variableRegisters[intY] >= variableRegisters[intX]) {
+                    variableRegisters[intX] = (byte) (variableRegisters[intY] - variableRegisters[intX]);
+                    variableRegisters[15] = 1;
+                    break;
+                } else {
+                    variableRegisters[intX] = (byte) (variableRegisters[intY] - variableRegisters[intX]);
+                    variableRegisters[15] = 0;
+                    break;
+                }
+                //(8XY6) Shift: Set vX = vY, then shift vX right then set vF = shiftedBit
+            case('6'):
+                variableRegisters[intX] = variableRegisters[intY];
+                int bitShiftRight = variableRegisters[intX] & 1;
+                variableRegisters[15] = (byte) bitShiftRight;
+                variableRegisters[intX] = (byte) ((variableRegisters[intX]& 0xFF) >> 1);
+                break;
+            //(8XYE) Shift: Set vX = vY, then shift vX left then set vF = shiftedBit
+            case('e'):
+                variableRegisters[intX] = variableRegisters[intY];
+                int bitShiftLeft = variableRegisters[intX] & 8;
+                variableRegisters[15] = (byte) bitShiftLeft;
+                variableRegisters[intX] = (byte) ((variableRegisters[intX] & 0xFF ) << 1);
+                break;
+            default:
+                break;
+        }
     }
 
     private void fOpcodes(String stringNN, int intX) {
@@ -283,34 +270,29 @@ public class CPU {
                     indexRegister += variableRegisters[intX];
                     break;
                 }
-                //(FX33) Binary-coded decimal conversion:
+            //(FX33) Binary-coded decimal conversion:
             case("33"):
                 System.out.println("We got to FX33");
-                String conversionString = "" + variableRegisters[intX];
-
-                for (int i = 0; i < conversionString.length(); i++) {
-                    int intBufferConversion = conversionString.charAt(i);
-                    memory.getMemoryArray()[indexRegister + i] = (byte) intBufferConversion;
-                }
+                int value = variableRegisters[intX] & 0xFF;
+                memory.getMemoryArray()[indexRegister]     = (byte) (value / 100);
+                memory.getMemoryArray()[indexRegister + 1] = (byte) ((value / 10) % 10);
+                memory.getMemoryArray()[indexRegister + 2] = (byte) (value % 10);
                 break;
             //(FX55) Store memory: from v0 -> vX into I -> I + X
             case("55"):
                 System.out.println("We got to FX55");
-                for (int i = 0; i < intX; i++) {
+                for (int i = 0; i <= intX; i++) {
                     memory.getMemoryArray()[indexRegister + i] = variableRegisters[i];
-
                 }
                 break;
             //(FX65) Load memory: from I -> I + X into v0 -> vX
             case("65"):
-                for (int i = 0; i < intX; i++) {
+                for (int i = 0; i <= intX; i++) {
                     variableRegisters[i] = memory.getMemoryArray()[indexRegister + i];
                 }
                 break;
             default:
                 break;
-
-
         }
     }
 
@@ -319,12 +301,6 @@ public class CPU {
     }
 
     public void setProgramCounter(int location) {
-
-
-
         this.programCounter = location;
     }
-
-
-
 }
