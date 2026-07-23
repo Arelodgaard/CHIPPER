@@ -204,15 +204,10 @@ public class CPU {
                 break;
             //(8XY4) Add: vX = vX + vY, if overflow set vF = 1 else vF = 0
             case('4'):
-                if (variableRegisters[intX] + variableRegisters[intY] > 127) {
-                    variableRegisters[intX] = (byte) (variableRegisters[intX] + variableRegisters[intY]);
-                    variableRegisters[15] = 1;
-                    break;
-                } else {
-                    variableRegisters[intX] = (byte) (variableRegisters[intX] + variableRegisters[intY]);
-                    variableRegisters[15] = 0;
-                    break;
-                }
+                int sum = (variableRegisters[intX] & 0xFF) + (variableRegisters[intY] & 0xFF);
+                variableRegisters[intX] = (byte) sum;
+                variableRegisters[15] = (byte) (sum > 255 ? 1 : 0);
+                break;
                 //(8XY5) Subtract: vX = vX - vY, if minuend >= subtrahend -> vF = 1 else vF = 0
             case('5'):
                 if (variableRegisters[intX] >= variableRegisters[intY]) {
@@ -239,17 +234,17 @@ public class CPU {
                 }
                 //(8XY6) Shift: Set vX = vY, then shift vX right then set vF = shiftedBit
             case('6'):
-                variableRegisters[intX] = variableRegisters[intY];
-                int bitShiftRight = variableRegisters[intX] & 1;
-                variableRegisters[15] = (byte) bitShiftRight;
-                variableRegisters[intX] = (byte) ((variableRegisters[intX]& 0xFF) >> 1);
+                int valueToShiftRight = variableRegisters[intY] & 0xFF;
+                int shiftedOutBitRight = valueToShiftRight & 1;
+                variableRegisters[intX] = (byte) (valueToShiftRight >> 1);
+                variableRegisters[15] = (byte) shiftedOutBitRight;
                 break;
             //(8XYE) Shift: Set vX = vY, then shift vX left then set vF = shiftedBit
             case('e'):
-                variableRegisters[intX] = variableRegisters[intY];
-                int bitShiftLeft = variableRegisters[intX] & 8;
-                variableRegisters[15] = (byte) bitShiftLeft;
-                variableRegisters[intX] = (byte) ((variableRegisters[intX] & 0xFF ) << 1);
+                int valueToShiftLeft = variableRegisters[intY] & 0xFF;
+                int shiftedOutBitLeft = (valueToShiftLeft & 0x80) >> 7;
+                variableRegisters[intX] = (byte) (valueToShiftLeft << 1);
+                variableRegisters[15] = (byte) shiftedOutBitLeft;
                 break;
             default:
                 break;
@@ -262,14 +257,10 @@ public class CPU {
             //(FX1E) Add to index: I += vX, if indexregister overflows over 12-bit it sets vF = 1
             case("1e"):
                 System.out.println("We got to FX1E");
-                if (indexRegister + variableRegisters[intX] > 0x1000) {
-                    indexRegister += variableRegisters[intX];
-                    variableRegisters[15] = 1;
-                    break;
-                } else {
-                    indexRegister += variableRegisters[intX];
-                    break;
-                }
+                int sum = indexRegister + (variableRegisters[intX] & 0xFF);
+                indexRegister = sum;
+                variableRegisters[15] = (byte) (sum > 0xFFF ? 1 : 0);
+                break;
             //(FX33) Binary-coded decimal conversion:
             case("33"):
                 System.out.println("We got to FX33");
