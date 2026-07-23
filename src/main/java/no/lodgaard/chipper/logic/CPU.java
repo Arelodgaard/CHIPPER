@@ -2,7 +2,6 @@ package no.lodgaard.chipper.logic;
 
 import no.lodgaard.chipper.IO.Renderer;
 
-import java.util.Arrays;
 import java.util.HexFormat;
 
 public class CPU {
@@ -131,6 +130,56 @@ public class CPU {
                     //(8XY3) Logical XOR: vX = vX XOR vY
                     case('3'):
                         variableRegisters[intX] = (byte) (variableRegisters[intX] ^ variableRegisters[intY]);
+                        break;
+                    //(8XY4) Add: vX = vX + vY, if overflow set vF = 1 else vF = 0
+                    case('4'):
+                        if (variableRegisters[intX] + variableRegisters[intY] > 127) {
+                            variableRegisters[intX] = (byte) (variableRegisters[intX] + variableRegisters[intY]);
+                            variableRegisters[15] = 1;
+                            break;
+                        } else {
+                            variableRegisters[intX] = (byte) (variableRegisters[intX] + variableRegisters[intY]);
+                            variableRegisters[15] = 0;
+                            break;
+                        }
+                    //(8XY5) Subtract: vX = vX - vY, if minuend >= subtrahend -> vF = 1 else vF = 0
+                    case('5'):
+                        if (variableRegisters[intX] >= variableRegisters[intY]) {
+                            variableRegisters[intX] = (byte) (variableRegisters[intX] - variableRegisters[intY]);
+                            variableRegisters[15] = 1;
+                            break;
+                        } else {
+                            variableRegisters[intX] = (byte) (variableRegisters[intX] - variableRegisters[intY]);
+                            variableRegisters[15] = 0;
+                            break;
+                        }
+
+
+                    //(8XY7) Subtract: vX = vY - vX, if minuend >= subtrahend -> vF = 1 else vF = 0
+                    case('7'):
+                        if (variableRegisters[intY] >= variableRegisters[intX]) {
+                            variableRegisters[intX] = (byte) (variableRegisters[intY] - variableRegisters[intX]);
+                            variableRegisters[15] = 1;
+                            break;
+                        } else {
+                            variableRegisters[intX] = (byte) (variableRegisters[intY] - variableRegisters[intX]);
+                            variableRegisters[15] = 0;
+                            break;
+                        }
+                    //(8XY6) Shift: Set vX = vY, then shift vX right then set vF = shiftedBit
+                    case('6'):
+                        variableRegisters[intX] = variableRegisters[intY];
+                        int bitShiftRight = variableRegisters[intX] & 1;
+                        variableRegisters[15] = (byte) bitShiftRight;
+                        variableRegisters[intX] = (byte) ((variableRegisters[intX]& 0xFF) >> 1);
+
+                        break;
+                    //(8XYE) Shift: Set vX = vY, then shift vX left then set vF = shiftedBit
+                    case('e'):
+                        variableRegisters[intX] = variableRegisters[intY];
+                        int bitShiftLeft = variableRegisters[intX] & 8;
+                        variableRegisters[15] = (byte) bitShiftLeft;
+                        variableRegisters[intX] = (byte) ((variableRegisters[intX] & 0xFF ) << 1);
                         break;
                     default:
                         break;
