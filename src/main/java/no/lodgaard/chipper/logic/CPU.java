@@ -2,6 +2,7 @@ package no.lodgaard.chipper.logic;
 
 import no.lodgaard.chipper.IO.Renderer;
 
+import java.time.LocalTime;
 import java.util.HexFormat;
 import java.util.Random;
 
@@ -17,9 +18,18 @@ public class CPU {
 
     private byte[] variableRegisters = new byte[16];
 
+    private long lastTime;
+
+    private int delayTimer = 0;
+    private int soundTimer = 0;
+
+    private boolean delayValueOver;
+    private boolean soundValueOver;
+
     public CPU(Memory memory, Renderer renderer) {
         this.memory = memory;
         this.renderer = renderer;
+
     }
 
     //Fetches the two bytes necessary for an instruction and increments the PC +2
@@ -39,7 +49,33 @@ public class CPU {
         return ((fetchedByte[0] & 0xFF) << 8) | (fetchedByte[1] & 0xFF);
     }
 
+    public void checkTimers() {
 
+
+
+
+
+        final double ns = 1000000000.0 / 60.0;
+
+        double delta = 0;
+
+        if (delayValueOver) {
+            long delayTimeNow = System.nanoTime();
+            long sumDelay = delayTimeNow - lastTime;
+            delayTimer -= (sumDelay > (long) 16666666.667 ? 1 : 0);
+            lastTime = System.nanoTime();
+        }
+
+        if (soundValueOver) {
+            long soundTimeNow = System.nanoTime();
+            long sumSound = soundTimeNow - lastTime;
+            delayTimer -= (sumSound > (long) 16666666.667 ? 1 : 0);
+            lastTime = System.nanoTime();
+        }
+
+
+
+    }
 
     public void decodeAndExecute(int instruction) {
 
