@@ -83,6 +83,11 @@ public class CPU {
                 if (charX == '0' & charY == 'e' & charN == '0') {
                     renderer.clearScreen();
                     break;
+                } else if (charX == '0' & charY == 'e' & charN == 'e'){
+                    byte[] stackInstruction = memory.popStack();
+                    //converting 12-bit back into an integer
+                    setProgramCounter(((stackInstruction[0] & 0xFF) << 8) | (stackInstruction[1] & 0xFF));
+                    break;
                 } else {
                     break;
                 }
@@ -95,6 +100,8 @@ public class CPU {
                 break;
             //(2NNN)Call: call subroutine at NNN
             case('2'):
+                memory.pushStack(getProgramCounter());
+                setProgramCounter(intNNN);
                 break;
             //(6XNN)Set: Simply set the register vx to the value nn.
             case('6'):
@@ -105,6 +112,9 @@ public class CPU {
             case('7'):
                 variableRegisters[intX] += byteNN[0];
                 break;
+            //(8XY)
+
+
             //(ANNN) Set Index: This sets the index register I to the value of NNN
             case('a'):
                 indexRegister = intNNN;
