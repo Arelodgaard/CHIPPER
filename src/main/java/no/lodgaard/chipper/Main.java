@@ -8,6 +8,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import no.lodgaard.chipper.IO.KeyCodeListener;
 import no.lodgaard.chipper.IO.Renderer;
 import no.lodgaard.chipper.logic.CPU;
 import no.lodgaard.chipper.logic.Memory;
@@ -55,12 +56,14 @@ public class Main extends Application {
         canvas.setFocusTraversable(true);
         canvas.requestFocus();
 
+        KeyCodeListener listener = new KeyCodeListener(scene, true, false);
+        listener.setUpListeners();
         memory = new Memory();
 
 
 
         romLoader = new RomLoader(memory);
-        romLoader.loadRom("src/main/resources/4-flags.ch8");
+        romLoader.loadRom("src/main/resources/1-chip8-logo.ch8");
 
         cpu = new CPU(memory, renderer);
         cpu.setProgramCounter(0x200);
@@ -68,7 +71,7 @@ public class Main extends Application {
 
 
 
-        for (int i = 0; i < 800; i++) {
+        for (int i = 0; i < 1000; i++) {
             System.out.println("Address: " + i + " Hex: " + HexFormat.of().toHexDigits(memory.getMemoryArray()[i]));
         }
 
@@ -80,13 +83,7 @@ public class Main extends Application {
         renderer.clearScreen();
         renderer.drawScreen(renderer.getPixelGrid());
 
-        boolean[] interrupted = {true};
-        boolean[] iterate = {false};
 
-        scene.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.P) interrupted[0] = !interrupted[0];
-            if (event.getCode() == KeyCode.I) iterate[0] = true;
-        });
 
 
 
@@ -95,19 +92,19 @@ public class Main extends Application {
             @Override
             public void handle(long now) {
 
-                if (interrupted[0] == false) {
+                if (!listener.getInterrupted(0)) {
 
                     for (int i = 0; i < CYCLES_PER_FRAME; i++) {
                         int instruction = cpu.fetchInstruction();
                         cpu.decodeAndExecute(instruction);
 
                     }
-                }   else if (interrupted[0] == true) {
-                    if (iterate[0] == true) {
+                }   else if (listener.getInterrupted(0)) {
+                    if (listener.getIterate(0)) {
                         int instruction = cpu.fetchInstruction();
                         cpu.decodeAndExecute(instruction);
                         System.out.println("Iterated");
-                        iterate[0] = false;
+                        listener.setIterate(0, false);
                     }
                 }
                 renderer.drawScreen(renderer.getPixelGrid());

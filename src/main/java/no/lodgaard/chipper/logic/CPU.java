@@ -273,9 +273,12 @@ public class CPU {
                     for (int j = 7; j >= 0; j--) {
                         int bit = (spriteData >> j) & 1;
                         switch (bit) {
+
                             case(0):
                                 break;
                             case(1):
+                                System.out.println("PosX passed to getPixelGridValue: " + posX);
+                                System.out.println("PosY passed to getPixelGridValue: " + posY);
                                 if (renderer.getPixelGridValue(posX, posY) == 0) {
                                     renderer.flipPixel(posX, posY);
                                 } else if (renderer.getPixelGridValue(posX, posY) == 1) {

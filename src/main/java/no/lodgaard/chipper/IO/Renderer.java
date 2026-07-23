@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 import java.util.Arrays;
 
-
+import static java.lang.Math.abs;
 
 
 public class Renderer{
@@ -143,8 +143,11 @@ public class Renderer{
 
     public int getPixelGridValue(int posX, int posY) {
 
-        if (posX > 64) posX -= 64;
-        if (posY > 32) posX -= 32;
+        posX = abs(posX);
+        posY = abs(posY);
+
+        if (posX >= 64) posX -= 64;
+        if (posY >= 32) posY -= 32;
 
         return getPixelGrid()[posX][posY];
 
@@ -152,8 +155,11 @@ public class Renderer{
 
     public void setPixelGridBit(int posX, int posY, int value) {
 
+        posX = abs(posX);
+        posY = abs(posY);
+
         if (posX >= 64) posX -= 64;
-        if (posY >= 32) posX -= 32;
+        if (posY >= 32) posY -= 32;
 
         getPixelGrid()[posX][posY] = value;
     }
