@@ -59,7 +59,7 @@ public class Main extends Application {
 
 
         romLoader = new RomLoader(memory);
-        romLoader.loadRom("src/main/resources/3-corax+.ch8");
+        romLoader.loadRom("src/main/resources/4-flags.ch8");
 
         cpu = new CPU(memory, renderer);
         cpu.setProgramCounter(0x200);
